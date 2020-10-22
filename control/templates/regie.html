@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block pagetitle %}Regie {{ room }}{% endblock %}
+{% block title %}Regie Remote{% endblock %}
+
+{% block head %}
+{{ super() }}
+<script src="{{ url_for('static', filename='dist/vue.js/vue.min.js') }}"></script>
+<script src="{{ url_for('static', filename='dist/socket.io/socket.io.js') }}"></script>
+<script src="https://{{ jitsi_domain }}/external_api.js"></script>
+
+<link href="{{ url_for('static', filename='dist/fontawesome/css/all.min.css') }}" rel="stylesheet" />
+
+<style>
+  .controls-side {
+    padding-top: 15px;
+  }
+  .controlpanel {
+    margin-bottom: 15px;
+    box-shadow: 0 0 0.5rem rgba(0, 0, 0, .2) inset;
+    background: #444;
+  }
+  .mixerinputs .btn-group button {
+    box-shadow: 0 0 0.5rem rgba(255, 255, 255, .2) inset;
+    padding: .5rem 0;
+    flex: 1 1 auto;
+  }
+  .mixerinputs .btn-group {
+    flex: 1 1 auto;
+  }
+  .mixerinputs .btn-group .dropdown-item {
+    padding: .1rem .5rem;
+    font-weight: 350;
+    font-size: 85%;
+  }
+  .mixerinputs .btn-group .dropdown-menu {
+    min-width: 95%;
+    padding: 0 0;
+  }
+  .custom-control-input:checked~.custom-control-label::before {
+    border-color: #dc3545;
+    background-color: #dc3545;
+  }
+  .mixer button {
+    box-shadow: 0 0 1rem rgba(100, 100, 100, .25) inset !important;
+  }
+
+  .jitsi-participants i.participant-visible.fas.fa-eye {
+    color: lightgreen !important;
+  }
+  .jitsi-participants i.participant-visible.fas:not(.fa-eye) {
+    color: orangered !important;
+  }
+
+</style>
+{% endblock %}
+
+
+{% block nav %}
+{% endblock %}
+
+{% block main %}
+{% raw %}
+<main role="main" class="container-fluid">
+  <div class="row">
+    <div class="col-md-8 video-main">
+      <div class="video-container" id="video-container" style="height:607px; width:1080px; background-color:rgba(0,0,0,0.33)">
+      </div><!-- /.video-container -->
+    </div><!-- /.video-main -->
+
+    <aside id="regie-container" class="col-md-4 controls-side">
+        <div class="p-2">
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="enableControlSwitch" v-model="remote_control">
+            <label class="custom-control-label" for="enableControlSwitch">Enable Control</label>
+          </div>
+        </div>
+        <div class="p-2" v-show="remote_control == false">
+          <div class="alert alert-info" role="alert">
+            Remote Control disabled.
+          </div>
+        </div>
+      <atem-client v-bind:atem="atem" v-on:atem-event="atemEvent"></atem-client>
+      <hr />
+      <jitsi-client v-for="j in jitsi" v-bind:jitsi="j" v-on:jitsi-event="jitsiEvent"></jitsi-client>
+    </aside>
+  </div>
+</main>
+{% endraw %}
+
+<script src="/static/js/regie/atem-client.js"></script>
+<script src="/static/js/regie/jitsi-client.js"></script>
+<script>
+$(document).ready(function() {
+const options = {
+    roomName: '{{ jitsi_room }}',
+    userInfo: {
+    },
+    parentNode: document.querySelector('#video-container'),
+    configOverwrite: {
+        startWithAudioMuted: true,
+        startWithVideoMuted: true,
+        VERTICAL_FILMSTRIP: false
+    },
+    interfaceConfigOverwrite: {
+        filmStripOnly: false,
+        prejoinPageEnabled: true
+    }
+};
+const JitsiApi = new JitsiMeetExternalAPI('{{ jitsi_domain }}', options);
+
+{% if jitsi_password %}
+JitsiApi.on('passwordRequired', function (){
+    JitsiApi.executeCommand('password', '{{ jitsi_password }}');
+});
+{% endif %}
+
+namespace = '/regie';
+roomname = '{{ jitsi_room }}'
+var socket = io(namespace);
+window.socket = socket;
+socket.on('connect', function() {
+    socket.emit('register', {type: 'user', room: roomname});
+});
+
+window.regie = new Vue({
+    el: '#regie-container',
+    data: {
+        remote_control: false,
+        jitsi_participants: null,
+        JitsiClients: {},
+        atem: {
+            inputs: { },
+/*
+                '1': { id: 1, longName: "DEBUG1"},
+                '2': { id: 2, longName: "HDMI2"},
+                '3': { id: 3, longName: "HDMI3"},
+                '4': { id: 4, longName: "HDMI4"},
+                '5': { id: 5, longName: "SDI1"},
+                '6': { id: 6, longName: "SDI2"},
+                '7': { id: 7, longName: "SDI3"},
+                '8': { id: 8, longName: "DEBUG8"},
+                '2000': { id: 2000, longName: "MP1"},
+                '2001': { id: 2001, longName: "MP2"},
+            },*/
+            state: { program: 5, preview: 1, inTransition: false},
+            audio: {
+                master: {gain: 0 },
+                channels: {}
+/*
+                    '1': { id: 1, state: 'on', gain: 0, type: 'HDMI'},
+                    '2': { id: 2, state: 'afv', gain: 0, type: 'HDMI'},
+                    '3': { id: 3, state: 'off', gain: 0, type: 'HDMI'},
+                    '4': { id: 4, state: 'off', gain: 0, type: 'HDMI'},
+                    '5': { id: 5, state: 'afv', gain: 0, type: 'SDI'},
+                    '6': { id: 6, state: 'off', gain: 0, type: 'SDI'},
+                    '7': { id: 7, state: 'off', gain: 0, type: 'SDI'},
+                    '8': { id: 8, state: 'off', gain: 0, type: 'SDI'},
+                    '1001': { id: 1001, state: 'on', gain: 0, type: 'XLR'},
+                } */
+            }
+        },
+        jitsi: {}
+    },
+    watch: {},
+    methods: {
+        atemEvent: function(eventname, data) {
+            if(this.remote_control == true) {
+              console.log('main atemEvent', eventname, data);
+              socket.emit('room', {command: eventname, id: 'atem', data: data});
+            } else {
+              alert("control not enabled.");
+              return false;
+            }
+        },
+        jitsiEvent: function(eventname, data) {
+            if(this.remote_control == true) {
+              console.log('main jitsiEvent', eventname, data);
+              socket.emit('room', {command: eventname, id: 'jitsi1', data: data}); //TODO
+            } else {
+              alert("control not enabled.");
+              return false;
+            }
+        }
+    }
+})
+
+socket.on('room', function(msg, cb) {
+    if (cb) cb();
+    if ( ! msg.type )
+        return;
+    switch (msg.type) {
+        case 'jitsi':
+            Vue.set(regie.jitsi, msg.source, msg.data);
+            break;
+        case 'atem':
+            Vue.set(regie, 'atem', msg.data);
+            break;
+    }
+    console.log('Received room message: ', msg);
+});
+
+socket.on('register', function(status, cb) {
+    console.log('registered status:' + status);
+    socket.emit('room', {command: 'discover'});
+    if (cb) cb();
+});
+
+});
+</script>
+{% endblock %}
