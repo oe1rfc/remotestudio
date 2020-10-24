@@ -17,7 +17,7 @@ async_mode = None
 cors_allowed_origins=[]
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret!'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', default='secret!')
 socketio = SocketIO(app, async_mode=async_mode, cors_allowed_origins=cors_allowed_origins)
 thread = None
 thread_lock = Lock()

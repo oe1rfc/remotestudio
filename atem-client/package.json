@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "atem-connection": "^2.0.0",
+    "socket.io-client": "^2.3.0"
+  },
+  "name": "atem-client",
+  "version": "1.0.0",
+  "description": "Atem Websocket worker client",
+  "main": "index.js",
+  "author": "Clemens Hopfer",
+  "license": "GPL"
+}
