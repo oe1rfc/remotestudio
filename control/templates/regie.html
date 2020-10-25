@@ -170,16 +170,14 @@ window.regie = new Vue({
               socket.emit('room', {command: eventname, id: 'atem', data: data});
             } else {
               alert("control not enabled.");
-              return false;
             }
         },
-        jitsiEvent: function(eventname, data) {
+        jitsiEvent: function(id, eventname, data) {
             if(this.remote_control == true) {
-              console.log('main jitsiEvent', eventname, data);
-              socket.emit('room', {command: eventname, id: 'jitsi1', data: data}); //TODO
+              console.log('main jitsiEvent', id, eventname, data);
+              socket.emit('room', {command: eventname, id: id, data: data});
             } else {
               alert("control not enabled.");
-              return false;
             }
         }
     }

@@ -113,10 +113,13 @@ class JitsiNamespace(socketio.ClientNamespace):
         log.warning("Disconnected!")
 
     def on_room(self, data):
-        print('room message:', data)
         if 'command' in data:
             cmd = data['command']
             cmd_data = None
+            if 'id' in data and data['id'] != self.worker_id:
+                log.info('command ignored for %s' % data['id'])
+                return
+            log.info('command for us: %s' % data)
             if 'data' in data:
                 cmd_data = data['data']
             handler_name = 'command_%s' % cmd

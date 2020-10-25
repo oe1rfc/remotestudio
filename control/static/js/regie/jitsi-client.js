@@ -4,46 +4,44 @@ Vue.component('jitsi-client', {
     showParticipant: function(participant) {
       console.log("showing", participant.displayName);
       //socket.emit('room', {command: 'showParticipant', data: { id: participant.id }});
-      this.$emit('jitsi-event', 'showParticipant', { id: participant.id });
+      this.$emit('jitsi-event', this.jitsi.id, 'showParticipant', { id: participant.id });
     },
     toggleParticipantMute: function(participant) {
       console.log("mute toggle", participant.displayName);
       //socket.emit('room', {command: 'toggleParticipantMute', data: { id: participant.id }});
-      this.$emit('jitsi-event', 'toggleParticipantMute', { id: participant.id });
+      this.$emit('jitsi-event', this.jitsi.id, 'toggleParticipantMute', { id: participant.id });
     },
     toggleParticipantVisible: function(participant) {
       console.log("visible toggle", participant.displayName, !participant.element_visible);
       //socket.emit('room', {command: 'setParticipantVisible', data: { id: participant.id, visible: !participant.element_visible }});
-      this.$emit('jitsi-event', 'setParticipantVisible', { id: participant.id, visible: !participant.element_visible });
+      this.$emit('jitsi-event', this.jitsi.id, 'setParticipantVisible', { id: participant.id, visible: !participant.element_visible });
     },
     setParticipantVolume: function(participant, volume) {
       volume = parseFloat(volume);
       console.log("set volume", volume, participant.displayName);
       //socket.emit('room', {command: 'setParticipantVolumeMute', data: { id: participant.id, volume: volume }});
-      this.$emit('jitsi-event', 'setParticipantVolumeMute', { id: participant.id, volume: volume });
+      this.$emit('jitsi-event', this.jitsi.id, 'setParticipantVolumeMute', { id: participant.id, volume: volume });
     },
     setParticipantVolumeEvent: function(participant, event) {
       this.setParticipantVolume(participant, event.target.value);
     },
     UIconnect: function() {
-      if ( this.jitsi.status =! 'disconnected' ) {
-        console.error("can not connect jitsi");
-      }
       var room = prompt('Jitsi Room Name:');
-      if ( room =! null && room != "" ) {
-        this.$emit('jitsi-event', 'connect', { room: room } );
+      if ( room != null && room != "" ) {
+        console.log('connect', room, this);
+        this.$emit('jitsi-event', this.jitsi.id, 'connect', { 'room': room } );
       }
     },
     UIdisconnect: function() {
       var confirm = prompt('please enter the word \'DISCONNECT\':');
       if (confirm === "DISCONNECT") {
-        this.$emit('jitsi-event', 'disconnect', {} );
+        this.$emit('jitsi-event', this.jitsi.id, 'disconnect', {} );
       }
     }
   },
   template: `
           <div class="p-3 controlpanel">
-          <h5>Jitsi {{ jitsi.id }} status: {{ jitsi.status }}
+          <h5>{{ jitsi.id }} status: {{ jitsi.status }} {{ jitsi.room }}
             <div class="float-right">
               <button type="button" class="btn btn-sm btn-success" v-show="jitsi.status != 'connected'" v-on:click="UIconnect">Connect <i class="fas fa-grip-horizontal"></button>
               <button type="button" class="btn btn-sm btn-danger" v-show="jitsi.status != 'disconnected'" v-on:click="UIdisconnect">Disconnect <i class="fas fa-grip-horizontal"></button>
