@@ -214,7 +214,7 @@ class JitsiNamespace(socketio.ClientNamespace):
     def task_send_update(self):
         while self.jitsi_connected:
             self.send_update()
-            sio.sleep(0.25)
+            sio.sleep(1)
 
 
 def main():

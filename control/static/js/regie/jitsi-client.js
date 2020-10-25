@@ -99,7 +99,7 @@ Vue.component('jitsi-client', {
                 </tbody>
             </table>
           <div role="group" aria-label="cut-action">
-            <button type="button" class="btn btn-sm btn-secondary" v-show="jitsi.status == 'connected'" v-on:click="$emit('jitsi-event', 'toggleTileView', {})">Toggle Tile View <i class="fas fa-grip-horizontal"></button>
+            <button type="button" class="btn btn-sm btn-secondary" v-show="jitsi.status == 'connected'" v-on:click="$emit('jitsi-event', jitsi.id, 'toggleTileView', {})">Toggle Tile View <i class="fas fa-grip-horizontal"></button>
           </div>
         </div>
   `
