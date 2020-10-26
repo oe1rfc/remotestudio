@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block pagetitle %}{% endblock %}
+{% block title %}PW20 View{% endblock %}
+
+{% block head %}
+{{ super() }}
+<script src="https://{{ jitsi_domain }}/external_api.js"></script>
+<style>
+.video-container {
+    position: absolute;
+    left: 5%;
+    right: 5%;
+    top: 5%;
+    bottom: 5%;
+    background-color:rgba(0,0,0,0.33)
+}
+</style>
+{% endblock %}
+
+
+{% block nav %}
+{% endblock %}
+
+{% block main %}
+{% raw %}
+<div class="video-container" id="video-container">
+{% endraw %}
+
+<script>
+$(document).ready(function() {
+const options = {
+    roomName: '{{ jitsi_room }}',
+    userInfo: {
+    },
+    parentNode: document.querySelector('#video-container'),
+    configOverwrite: {
+        startWithAudioMuted: true,
+        startWithVideoMuted: true,
+{% if jitsi_silent %}
+        startSilent: true,
+{% endif %}
+        prejoinPageEnabled: true,
+        VERTICAL_FILMSTRIP: false,
+    },
+    interfaceConfigOverwrite: {
+        filmStripOnly: false,
+        MAXIMUM_ZOOMING_COEFFICIENT: 1,
+    }
+};
+const JitsiApi = new JitsiMeetExternalAPI('{{ jitsi_domain }}', options);
+
+{% if jitsi_password %}
+JitsiApi.on('passwordRequired', function (){
+    JitsiApi.executeCommand('password', '{{ jitsi_password }}');
+});
+{% endif %}
+
+});
+</script>
+{% endblock %}

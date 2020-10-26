@@ -100,11 +100,12 @@ const options = {
     configOverwrite: {
         startWithAudioMuted: true,
         startWithVideoMuted: true,
-        VERTICAL_FILMSTRIP: false
+        prejoinPageEnabled: true,
     },
     interfaceConfigOverwrite: {
+        VERTICAL_FILMSTRIP: true,
         filmStripOnly: false,
-        prejoinPageEnabled: true
+        MAXIMUM_ZOOMING_COEFFICIENT: 1,
     }
 };
 const JitsiApi = new JitsiMeetExternalAPI('{{ jitsi_domain }}', options);

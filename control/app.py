@@ -33,6 +33,28 @@ def route_regie(room):
             )
 
 
+@app.route('/view/<room>')
+def route_view(room):
+    return render_template('viewonly.html',
+                async_mode=socketio.async_mode,
+                room = room,
+                jitsi_silent = False,
+                jitsi_room = f"studio_{room}",
+                jitsi_domain = os.getenv('JITSI_DOMAIN', default='jitsi'),
+                jitsi_password = os.getenv('JITSI_ROOM_PASSWORD', default=None),
+            )
+
+@app.route('/viewmuted/<room>')
+def route_viewmuted(room):
+    return render_template('viewonly.html',
+                async_mode=socketio.async_mode,
+                room = room,
+                jitsi_silent = True,
+                jitsi_room = f"studio_{room}",
+                jitsi_domain = os.getenv('JITSI_DOMAIN', default='jitsi'),
+                jitsi_password = os.getenv('JITSI_ROOM_PASSWORD', default=None),
+            )
+
 class RegieNamespace(Namespace):
     def on_my_broadcast_event(self, message):
         session['receive_count'] = session.get('receive_count', 0) + 1
