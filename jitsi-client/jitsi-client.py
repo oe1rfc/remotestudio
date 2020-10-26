@@ -82,7 +82,7 @@ class JitsiNamespace(socketio.ClientNamespace):
             $(".filmstrip__toolbar").hide();
             $(".large-video-labels").hide();
             $("#new-toolbox").hide();
-            $("#videoconference_page > .subject").hide();
+            $("#videoconference_page .subject").hide();
             $(".atlaskit-portal div").hide();
             $("#filmstripLocalVideo").hide();
             $("#localVideoTileViewContainer").hide();
