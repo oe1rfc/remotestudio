@@ -52,6 +52,20 @@
     color: orangered !important;
   }
 
+  .video-container {
+    height: 607px;
+    width: 1080px;
+    background-color: rgba(0,0,0,0.33);
+    position: fixed;
+    top: 4rem;
+  }
+
+  .regie-container {
+    top: 4rem;
+    right: 2rem;
+    position: absolute;
+  }
+
 </style>
 {% endblock %}
 
@@ -64,11 +78,11 @@
 <main role="main" class="container-fluid">
   <div class="row">
     <div class="col-md-8 video-main">
-      <div class="video-container" id="video-container" style="height:607px; width:1080px; background-color:rgba(0,0,0,0.33)">
+      <div class="video-container" id="video-container">
       </div><!-- /.video-container -->
     </div><!-- /.video-main -->
 
-    <aside id="regie-container" class="col-md-4 controls-side">
+    <aside id="regie-container" class="col-md-4 controls-side regie-container">
         <div class="p-2">
           <div class="custom-control custom-switch">
             <input type="checkbox" class="custom-control-input" id="enableControlSwitch" v-model="remote_control">
