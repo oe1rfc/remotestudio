@@ -69,7 +69,7 @@ atem.on('stateChanged', (state, pathToChange) => {
             AtemEvent.emit(path, path, state);
         } else if ( path != "info.lastTime" ) {
             console.log('unknown event:', path);
-            console.log(JSON.stringify(state, null, 4));
+            //console.log(JSON.stringify(state, null, 4));
         }
     }
 });
