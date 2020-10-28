@@ -88,6 +88,7 @@ class JitsiNamespace(socketio.ClientNamespace):
             $("#localVideoTileViewContainer").hide();
             $('span.videocontainer > div').hide();
             $('span.videocontainer > span').hide();
+            $(".indicator-container").hide();
             APP.conference.localAudio.mute();
             """)
 
