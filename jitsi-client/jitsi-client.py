@@ -204,7 +204,7 @@ class JitsiNamespace(socketio.ClientNamespace):
         data = {
             'id':           self.worker_id,
             'status':       self.status,
-            'room:':        self.jitsi_room,
+            'room':        self.jitsi_room,
             'participants': self.jitsi.getParticipants() if self.jitsi_connected else []
         }
         self.send_room(data, 'jitsi')
