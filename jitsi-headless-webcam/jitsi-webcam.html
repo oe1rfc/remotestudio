@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script src='https://talks.privacyweek.at/external_api.js'></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title></title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #video-container {
+        height: 480px;
+        width: 704px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="video-container"></div>
+<script>
+(function() {
+    const domain = 'talks.privacyweek.at';
+    const options = {
+        roomName: 'studio_saal1',
+        width: 704,
+        height: 480,
+        parentNode: document.querySelector('#video-container'),
+        configOverwrite: {
+            prejoinPageEnabled: false,
+            startWithVideoMuted: false
+        },
+        userInfo: {
+            displayName: 'MIXER'
+        },
+        devices: {
+            audioInput: 'FHD Capture, USB Audio-Default Audio Device',
+            videoInput: 'FHD Capture (1bcf:2c99)'
+        },
+    };
+    window.api = new JitsiMeetExternalAPI(domain, options);
+
+// set new password for channel
+	window.api.addEventListener('participantRoleChanged', function(event) {
+		    if (event.role === "moderator") {
+			            api.executeCommand('password', 'replace-me-room-password');
+			        }
+	});
+
+window.api.on('passwordRequired', function ()
+{
+	    api.executeCommand('password', 'replace-me-room-password');
+});
+
+
+})();
+</script>
+  </body>
+</html>
