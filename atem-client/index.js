@@ -119,7 +119,7 @@ WsCommand.on('changePreviewInput', function(event, data) {
 });
 WsCommand.on('setAuxSource', function(event, data) {
     atem.setAuxSource(data.id).then(() => {
-        console.log('Preview set.');
+        console.log('Aux set.');
     });
 });
 WsCommand.on('cut', function(event, data) {
