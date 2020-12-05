@@ -8,9 +8,25 @@ it consists of:
 * centralized webinterface for remote studio control, multi-user
 * 'worker' clients
   * atem videomixer control
-  * several display-clients as 'virtual cameras' eg jitsi
+  * Jitsi "head-only" display-client as 'virtual cameras'
 
-This should be considered a PoC and not a finished product.
+## Jitsi client
+The main of this project is a remote-controlled Jitsi display client based on the Jibri project with currently the following featureset:
+* jitsi room joining via Studio Web UI
+* multiple Jitsi display clients per Studio room
+* hidden Jitsi UI Elements, optional tileview background
+* display Jitsi participants and their state+tracks and audio activity in Studio UI
+* Studio Controls:
+  * switch fullscreen/tileview
+  * pin participants in fullscreen
+  * dynamically hide participants in tile view
+  * mute and control volume of participants
+
+![PrivacyWeek 2020 Live Studio Screenshot](.screenshots/pw20_mwl.png)
+
+
+
+Please note that this should be considered a PoC and not a finished product.
 
 # protocol ideas
 
